@@ -55,6 +55,12 @@ function resolveRoute() {
 
   const lastSegment = segments[segments.length - 1];
 
+  // Treat project base path on GitHub Pages (e.g., /quiz-maker) as menu, not a quiz id
+  const baseSegment = segments[0];
+  if (segments.length === 1 || lastSegment === baseSegment) {
+    return { type: 'menu' };
+  }
+
   if (lastSegment === 'menu' || lastSegment === 'index.html') {
     return { type: 'menu' };
   }
