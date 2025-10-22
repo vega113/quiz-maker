@@ -20,7 +20,7 @@ function createTipElements(question, index, onTipUsed) {
   const tipToggle = document.createElement('button');
   tipToggle.type = 'button';
   tipToggle.classList.add('tip');
-  tipToggle.textContent = 'Показать подсказку (штраф за подсказку)';
+  tipToggle.textContent = '💡 Показать подсказку';
 
   const tipBody = document.createElement('div');
   tipBody.classList.add('tip-text');

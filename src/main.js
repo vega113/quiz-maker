@@ -17,6 +17,7 @@ const menuView = document.getElementById('menu-view');
 const quizView = document.getElementById('quiz-view');
 const quizList = document.getElementById('quiz-list');
 const quizMetaExtra = document.getElementById('quiz-meta-extra');
+const backNav = document.getElementById('back-nav');
 
 let cleanupQuiz = null;
 
@@ -91,6 +92,9 @@ function showMenu(manifest) {
   quizView.hidden = true;
   checkButton.hidden = true;
   resultContainer.hidden = true;
+  if (backNav) {
+    backNav.hidden = true;
+  }
 
   renderMenu({ quizzes: manifest, container: quizList });
   menuView.hidden = false;
@@ -101,6 +105,9 @@ function showQuiz(quiz) {
   quizView.hidden = false;
   checkButton.hidden = false;
   resultContainer.hidden = true;
+  if (backNav) {
+    backNav.hidden = false;
+  }
 
   quizTitle.textContent = quiz.title;
   quizDescription.textContent = quiz.description;
