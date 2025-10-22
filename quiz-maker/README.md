@@ -61,7 +61,7 @@ The app reads the pathname to decide which view to render. Serve it with a stati
    npm run generate:manifest
    ```
    The script scans quiz files, extracts titles/descriptions, and writes `public/assets/quizzes/quizzes.json`.
-3. Launch the app at `/menu` to see the menu or go directly to `/<quiz-id>` (e.g., `http://localhost:4173/history-basics`). When static hosting does not support clean URLs, fall back to `index.html?quiz=history-basics`.
+3. Launch the app at `/menu` to see the menu. Menu links use the query-string form (`?quiz=<id>`) so they work even on servers without SPA rewrites. You can also open `index.html?quiz=history-basics` directly.
 4. The loader sanitizes IDs (`a-z0-9-_`), so match the filename and desired URL slug.
 
 ## Formatting & Testing

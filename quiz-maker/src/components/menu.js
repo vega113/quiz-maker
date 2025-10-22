@@ -15,7 +15,7 @@ export function renderMenu({ quizzes, container }) {
 
     const link = document.createElement('a');
     link.classList.add('quiz-menu__link');
-    link.href = `./${quiz.id}`;
+    link.href = `?quiz=${quiz.id}`;
     link.textContent = quiz.title;
 
     const description = document.createElement('p');

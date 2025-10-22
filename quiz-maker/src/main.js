@@ -74,7 +74,7 @@ function showMenu(manifest) {
   }
 
   quizTitle.textContent = 'Выберите викторину';
-  quizDescription.textContent = 'Список формируется из public/assets/quizzes/quizzes.json.';
+  quizDescription.textContent = '';
   document.title = 'Quiz Maker — Меню';
 
   quizView.hidden = true;
