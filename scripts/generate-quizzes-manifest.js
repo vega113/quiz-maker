@@ -57,6 +57,9 @@ function buildManifest() {
       id,
       title: data.title || id,
       description: data.description || '',
+      // pass-through optional metadata so the menu can show them
+      sourceUrl: typeof data.sourceUrl === 'string' ? data.sourceUrl : undefined,
+      author: typeof data.author === 'string' ? data.author : undefined,
       filename,
     };
   });

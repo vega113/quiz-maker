@@ -28,6 +28,39 @@ export function renderMenu({ quizzes, container }) {
       item.appendChild(description);
     }
 
+    // Optional metadata: author and source link
+    if (quiz.author || quiz.sourceUrl) {
+      const meta = document.createElement('p');
+      meta.classList.add('quiz-menu__meta');
+
+      const parts = [];
+      if (quiz.author) {
+        const authorSpan = document.createElement('span');
+        authorSpan.textContent = `Автор: ${quiz.author}`;
+        parts.push(authorSpan);
+      }
+
+      if (quiz.sourceUrl) {
+        const sourceSpan = document.createElement('span');
+        const a = document.createElement('a');
+        a.href = quiz.sourceUrl;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = 'Источник';
+        sourceSpan.appendChild(a);
+        parts.push(sourceSpan);
+      }
+
+      parts.forEach((node, idx) => {
+        meta.appendChild(node);
+        if (idx < parts.length - 1) {
+          meta.appendChild(document.createTextNode(' • '));
+        }
+      });
+
+      item.appendChild(meta);
+    }
+
     container.appendChild(item);
   });
 }

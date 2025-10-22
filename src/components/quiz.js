@@ -165,9 +165,13 @@ export function mountQuiz({ quiz, quizContainer, resultContainer, checkButton })
     resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  checkButton.onclick = handleCheck;
+  // Ensure the button is interactable when the quiz is mounted
+  checkButton.disabled = false;
+  // Attach handler using addEventListener for robustness
+  checkButton.addEventListener('click', handleCheck);
 
   return () => {
-    checkButton.onclick = null;
+    // Clean up the listener when unmounting the quiz
+    checkButton.removeEventListener('click', handleCheck);
   };
 }

@@ -16,6 +16,7 @@ const messageBox = document.getElementById('message');
 const menuView = document.getElementById('menu-view');
 const quizView = document.getElementById('quiz-view');
 const quizList = document.getElementById('quiz-list');
+const quizMetaExtra = document.getElementById('quiz-meta-extra');
 
 let cleanupQuiz = null;
 
@@ -81,6 +82,10 @@ function showMenu(manifest) {
 
   quizTitle.textContent = 'Выберите викторину';
   quizDescription.textContent = '';
+  if (quizMetaExtra) {
+    quizMetaExtra.textContent = '';
+    quizMetaExtra.hidden = true;
+  }
   document.title = 'Quiz Maker — Меню';
 
   quizView.hidden = true;
@@ -99,6 +104,42 @@ function showQuiz(quiz) {
 
   quizTitle.textContent = quiz.title;
   quizDescription.textContent = quiz.description;
+  // Render optional author and source link
+  if (quizMetaExtra) {
+    quizMetaExtra.innerHTML = '';
+    const parts = [];
+
+    if (quiz.author) {
+      const authorSpan = document.createElement('span');
+      authorSpan.textContent = `Автор: ${quiz.author}`;
+      parts.push(authorSpan);
+    }
+
+    if (quiz.sourceUrl) {
+      const sourceSpan = document.createElement('span');
+      const link = document.createElement('a');
+      link.href = quiz.sourceUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = 'Источник';
+      sourceSpan.append(' ', link);
+      parts.push(sourceSpan);
+    }
+
+    if (parts.length > 0) {
+      // separate by middle dot
+      parts.forEach((node, idx) => {
+        quizMetaExtra.appendChild(node);
+        if (idx < parts.length - 1) {
+          quizMetaExtra.appendChild(document.createTextNode(' • '));
+        }
+      });
+      quizMetaExtra.hidden = false;
+    } else {
+      quizMetaExtra.hidden = true;
+    }
+  }
+
   document.title = `${quiz.title} — Quiz Maker`;
 
   if (cleanupQuiz) {
@@ -129,6 +170,10 @@ async function bootstrap() {
   } catch (error) {
     quizTitle.textContent = 'Не удалось загрузить данные';
     quizDescription.textContent = '';
+    if (quizMetaExtra) {
+      quizMetaExtra.textContent = '';
+      quizMetaExtra.hidden = true;
+    }
     showMessage(error.message || 'Произошла ошибка при загрузке.', 'error');
     menuView.hidden = true;
     quizView.hidden = true;

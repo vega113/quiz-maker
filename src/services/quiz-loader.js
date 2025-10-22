@@ -44,6 +44,9 @@ export async function loadQuizManifest() {
         id,
         title: quiz.title || id,
         description: quiz.description || '',
+        // optional metadata for rendering in menu
+        sourceUrl: typeof quiz.sourceUrl === 'string' ? quiz.sourceUrl : '',
+        author: typeof quiz.author === 'string' ? quiz.author : '',
       };
     })
     .filter(Boolean);
@@ -66,6 +69,9 @@ export async function loadQuizConfig(quizId) {
   return {
     title: data.title || 'Без названия',
     description: data.description || '',
+    // New optional metadata
+    sourceUrl: typeof data.sourceUrl === 'string' ? data.sourceUrl : '',
+    author: typeof data.author === 'string' ? data.author : '',
     settings: {
       tipPenalty: typeof data.tipPenalty === 'number' ? data.tipPenalty : 0.5,
     },

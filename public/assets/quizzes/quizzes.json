@@ -1,10 +1,33 @@
 {
-  "generatedAt": "2025-10-22T14:59:10.456Z",
+  "generatedAt": "2025-10-22T17:18:23.565Z",
   "quizzes": [
+    {
+      "id": "voice-training-quiz",
+      "title": "Голос — сила уверенного спикера",
+      "description": "Проверьте, насколько вы понимаете принципы работы с голосом, чтобы звучать убедительно, глубоко и естественно.",
+      "sourceUrl": "https://youtu.be/_e2xr6MAbrU",
+      "author": "Pracara school"
+    },
     {
       "id": "public-speaking",
       "title": "Контент для захватывающего выступления",
-      "description": "Проверьте, насколько уверенно вы управляете вниманием аудитории."
+      "description": "Проверьте, насколько уверенно вы управляете вниманием аудитории.",
+      "sourceUrl": "https://youtu.be/gey82mRNAco",
+      "author": "Риддхи"
+    },
+    {
+      "id": "working-with-voice",
+      "title": "Работа с голосом",
+      "description": "Проверьте, насколько хорошо вы освоили базовые принципы работы с телом, голосом и дикцией.",
+      "sourceUrl": "https://www.youtube.com/watch?v=T_GN5Ms-RRk",
+      "author": "Pracara School"
+    },
+    {
+      "id": "quiz-managing-emotions-speaker",
+      "title": "Работа с эмоциями спикера",
+      "description": "Проверьте, насколько хорошо вы умеете управлять волнением и превращать страх в энергию вдохновения.",
+      "sourceUrl": "https://www.youtube.com/watch?v=eKLzHKkvVDM",
+      "author": "Дживаприя (Pracara School)"
     }
   ]
 }
