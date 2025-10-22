@@ -1,158 +1,30 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Викторина: Контент для захватывающего выступления</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 40px; background: #f7f9fa; color: #222; }
-        h1 { text-align: center; color: #2b3e50; }
-        .question { background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin: 20px 0; padding: 20px; }
-        .answers label { display: block; padding: 8px; border-radius: 5px; cursor: pointer; transition: background 0.2s; }
-        .answers label:hover { background: #e6f0ff; }
-        button { margin-top: 10px; background: #2b7cff; color: white; border: none; border-radius: 6px; padding: 10px 20px; cursor: pointer; }
-        button:hover { background: #1e63d0; }
-        .result { margin-top: 30px; padding: 15px; border-radius: 8px; background: #e6f8ec; color: #2e7d32; font-weight: 600; display: none; }
-        .tip { color: #0074d9; cursor: pointer; text-decoration: underline; }
-        .tip-text { display: none; background: #eef6ff; border-left: 4px solid #0074d9; padding: 8px; margin-top: 5px; border-radius: 4px; }
-        .incorrect-list { list-style: decimal inside; margin: 0; padding-left: 0; }
-        .incorrect { background: #ffecec; border-left: 4px solid #d9534f; padding: 12px; border-radius: 8px; margin-top: 12px; }
-        .incorrect__question { font-weight: 600; margin: 0 0 6px; }
-        .incorrect__answer { margin: 0; font-style: italic; }
-        .incorrect__tip { margin: 6px 0 0; font-weight: 600; }
-        .result__summary { margin: 0 0 16px; }
-        .result__heading { margin: 0 0 8px; }
-    </style>
-</head>
-<body>
-<h1>Викторина: Контент для захватывающего выступления</h1>
+    <title>Quiz Maker</title>
+    <link rel="stylesheet" href="./styles/main.css">
+  </head>
+  <body>
+    <main>
+      <header class="quiz-meta">
+        <h1 id="quiz-title">Загрузка…</h1>
+        <p id="quiz-description"></p>
+      </header>
 
-<div id="quiz"></div>
-<button onclick="checkAnswers()">Проверить ответы</button>
-<div id="result" class="result"></div>
+      <section id="menu-view" hidden>
+        <ul id="quiz-list" class="quiz-menu"></ul>
+      </section>
 
-<script>
-    const quizData = [
-        {q: 'Что является первым шагом при подготовке к любому выступлению?', a: ['Подобрать визуальные материалы', 'Определить аудиторию', 'Составить план выступления', 'Выучить текст наизусть'], correct: 1, tip: 'Всегда начинайте с понимания аудитории — кто они и чего ждут.'},
-        {q: 'Основная метафора выступления по Риддхи — это…', a: ['Танец с аудиторией', 'Полёт фантазии', 'Движение внимания слушателя из точки А в точку Б', 'Конфронтация идей'], correct: 2, tip: 'Выступление — это процесс, где слушатель движется от одного состояния к другому.'},
-        {q: 'Три шага управления вниманием аудитории — это:', a: ['Привлечь – удержать – развеселить', 'Захватить – направить – удержать', 'Начать – развить – закончить', 'Удивить – убедить – успокоить'], correct: 1, tip: 'Ключевые этапы управления вниманием: захватить, направить и удерживать.'},
-        {q: 'Один из способов захватить внимание — это:', a: ['Начать с длинного вступления', 'Использовать сильный визуал или неожиданный старт', 'Начать с извинений', 'Читать текст без эмоций'], correct: 1, tip: 'Сильное начало — короткое, яркое, неожиданное.'},
-        {q: 'Чтобы направлять внимание, нужно:', a: ['Поддерживать логику изложения', 'Много шутить', 'Говорить громко', 'Часто менять тему'], correct: 0, tip: 'Логика и ясность выстраивают путь внимания аудитории.'},
-        {q: 'Для удержания внимания важно:', a: ['Повторять одни и те же фразы', 'Раскачивать внимание и сохранять полное присутствие', 'Читать монотонно', 'Избегать пауз'], correct: 1, tip: 'Динамика и эмоциональная вовлечённость удерживают внимание.'},
-        {q: 'Что Риддхи называет самым опасным для спикера?', a: ['Слишком громкий голос', 'Отсутствие презентации', 'Псевдоличность на сцене', 'Использование юмора'], correct: 2, tip: 'Искренность вызывает доверие. Притворство — отталкивает.'},
-        {q: 'Почему важно чётко формулировать мысли?', a: ['Чтобы выглядеть умнее', 'Чтобы сократить время выступления', 'Чтобы слушатели одинаково поняли смысл', 'Чтобы запутать аудиторию'], correct: 2, tip: 'Чёткие формулировки убирают двусмысленность и фокусируют смысл.'},
-        {q: 'Что помогает удерживать внимание в современном мире?', a: ['Длинные тексты', 'Визуалы и частая смена ритма', 'Тишина и спокойствие', 'Сложные термины'], correct: 1, tip: 'Короткие блоки, визуалы и динамика лучше удерживают фокус.'},
-        {q: 'Почему нельзя просто говорить аудитории, что «это важно»?', a: ['Потому что это раздражает', 'Потому что важность нужно показать, а не заявить', 'Потому что это занимает время', 'Потому что это запрещено'], correct: 1, tip: 'Не говорите, что важно — покажите это через смысл и примеры.'}
-    ];
+      <section id="quiz-view" hidden>
+        <div id="quiz"></div>
+        <button id="check-answers" type="button" hidden>Проверить ответы</button>
+        <section id="result" class="result" aria-live="polite" hidden></section>
+      </section>
 
-    const quizContainer = document.getElementById('quiz');
-
-    quizData.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.classList.add('question');
-        div.innerHTML = `<h3>${index + 1}. ${item.q}</h3>`;
-        const answersDiv = document.createElement('div');
-        answersDiv.classList.add('answers');
-
-        item.a.forEach((ans, i) => {
-            const id = `q${index}_a${i}`;
-            answersDiv.innerHTML += `<label><input type='radio' name='q${index}' value='${i}'> ${ans}</label>`;
-        });
-
-        const tipBtn = document.createElement('div');
-        tipBtn.classList.add('tip');
-        tipBtn.textContent = 'Показать подсказку (минус 50% за этот вопрос)';
-        const tipText = document.createElement('div');
-        tipText.classList.add('tip-text');
-        tipText.textContent = item.tip;
-        tipBtn.addEventListener('click', () => {
-            tipText.style.display = 'block';
-            tipBtn.disabled = true;
-            item.usedTip = true;
-        });
-
-        div.appendChild(answersDiv);
-        div.appendChild(tipBtn);
-        div.appendChild(tipText);
-        quizContainer.appendChild(div);
-    });
-
-    function checkAnswers() {
-        let score = 0;
-        let correctCount = 0;
-        let incorrectDetails = [];
-        const unanswered = [];
-
-        quizData.forEach((item, index) => {
-            const answer = document.querySelector(`input[name='q${index}']:checked`);
-            if (!answer) {
-                unanswered.push(index + 1);
-                return;
-            }
-
-            if (parseInt(answer.value, 10) === item.correct) {
-                correctCount += 1;
-                score += item.usedTip ? 0.5 : 1;
-            } else {
-                incorrectDetails.push({ question: item.q, correctAnswer: item.a[item.correct], tip: item.tip });
-            }
-        });
-
-        const result = document.getElementById('result');
-        result.style.display = 'block';
-        result.innerHTML = '';
-
-        if (unanswered.length > 0) {
-            const warning = document.createElement('p');
-            warning.classList.add('result__summary');
-            warning.style.color = '#d9534f';
-            warning.textContent = `Пожалуйста, ответьте на все вопросы перед проверкой. Не отвечено: ${unanswered.join(', ')}.`;
-            result.appendChild(warning);
-            return;
-        }
-
-        const summary = document.createElement('p');
-        summary.classList.add('result__summary');
-        summary.textContent = `Вы ответили правильно на ${correctCount} из ${quizData.length} вопросов (итоговый балл с учётом подсказок: ${score.toFixed(1)}).`;
-        result.appendChild(summary);
-
-        if (incorrectDetails.length > 0) {
-            const heading = document.createElement('h3');
-            heading.classList.add('result__heading');
-            heading.textContent = 'Ошибки';
-            result.appendChild(heading);
-
-            const list = document.createElement('ol');
-            list.classList.add('incorrect-list');
-
-            incorrectDetails.forEach((item) => {
-                const entry = document.createElement('li');
-                entry.classList.add('incorrect');
-
-                const question = document.createElement('p');
-                question.classList.add('incorrect__question');
-                question.textContent = item.question;
-
-                const answer = document.createElement('p');
-                answer.classList.add('incorrect__answer');
-                answer.textContent = `Правильный ответ: ${item.correctAnswer}`;
-
-                const tip = document.createElement('p');
-                tip.classList.add('incorrect__tip');
-                tip.textContent = 'Подсказка: ';
-                const tipText = document.createElement('span');
-                tipText.textContent = item.tip;
-                tip.appendChild(tipText);
-
-                entry.appendChild(question);
-                entry.appendChild(answer);
-                entry.appendChild(tip);
-                list.appendChild(entry);
-            });
-
-            result.appendChild(list);
-        }
-    }
-</script>
-</body>
+      <section id="message" class="alert" role="alert" hidden></section>
+    </main>
+    <script type="module" src="./src/main.js"></script>
+  </body>
 </html>

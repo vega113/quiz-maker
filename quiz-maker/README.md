@@ -4,11 +4,13 @@ A lightweight web-based quiz interface scaffolding. Use this project to experime
 
 ## Project Structure
 
-- `index.html`: Shell for the quiz UI.
+- `index.html`: Static entry point that wires styles and the module loader.
+- `src/main.js`: Bootstraps the quiz, resolves the quiz ID, and mounts UI components.
+- `src/components/`: UI-specific modules (e.g., `quiz.js` renders the interface).
+- `src/services/`: Data helpers such as `quiz-loader.js` for fetching quiz JSON.
+- `styles/`: Shared stylesheet files (`styles/main.css` contains the base theme).
+- `public/assets/quizzes/`: Quiz JSON definitions that can be added/dropped independently.
 - `package.json`: Node tooling placeholder.
-- `src/`: Add components, services, and helpers here (e.g., `src/components/quiz-card.js`).
-- `styles/`: Shared stylesheet files.
-- `public/assets/`: Static media assets (images, audio, etc.).
 - `dist/`: Bundler output (ignored by git).
 - `tests/`: Vitest suites mirroring modules under `src/`.
 
@@ -24,6 +26,10 @@ A lightweight web-based quiz interface scaffolding. Use this project to experime
    ```
 3. When the project grows, add a bundler (Vite or Parcel) configured to emit into `dist/` and document it under an `npm run build` script.
 
+### Routing & Static Hosting
+
+The app reads the pathname to decide which view to render. Serve it with a static server that supports single-page app fallbacks (e.g., `npx http-server . --port 4173 --push-state`). Without a fallback, deep links such as `/history-basics` may 404; in that case use `index.html?quiz=history-basics` instead.
+
 ## Development Guidelines
 
 - Use two-space indentation and semantic HTML.
@@ -31,6 +37,32 @@ A lightweight web-based quiz interface scaffolding. Use this project to experime
 - Name files in kebab-case and export primary functions/components as named exports.
 - Place fetch or API logic inside `src/services/` with centralized error handling.
 - Store secrets in `.env.local` and reference them in `README.md` without committing sensitive values.
+
+## Adding a New Quiz
+
+1. Create a JSON file under `public/assets/quizzes/` (e.g., `history-basics.json`) using the shape below:
+   ```json
+   {
+     "title": "History Basics",
+     "description": "Quick check on history milestones.",
+     "tipPenalty": 0.5,
+     "questions": [
+       {
+         "prompt": "Кто открыл Америку?",
+         "answers": ["Марко Поло", "Христофор Колумб", "Фернан Магеллан"],
+         "correctIndex": 1,
+         "tip": "Это путешественник, который приплыл в 1492 году."
+       }
+     ]
+   }
+   ```
+2. Regenerate the manifest so the menu picks it up:
+   ```sh
+   npm run generate:manifest
+   ```
+   The script scans quiz files, extracts titles/descriptions, and writes `public/assets/quizzes/quizzes.json`.
+3. Launch the app at `/menu` to see the menu or go directly to `/<quiz-id>` (e.g., `http://localhost:4173/history-basics`). When static hosting does not support clean URLs, fall back to `index.html?quiz=history-basics`.
+4. The loader sanitizes IDs (`a-z0-9-_`), so match the filename and desired URL slug.
 
 ## Formatting & Testing
 
