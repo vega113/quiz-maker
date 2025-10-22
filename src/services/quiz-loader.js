@@ -2,6 +2,26 @@ const QUIZ_BASE_PATH = './public/assets/quizzes/';
 const MANIFEST_PATH = `${QUIZ_BASE_PATH}quizzes.json`;
 const DEFAULT_QUIZ_ID = 'public-speaking';
 
+function parseLeadingNumberFromId(id = '') {
+  const match = /^([0-9]+)/.exec(id);
+  return match ? parseInt(match[1], 10) : null;
+}
+
+function compareQuizzes(a, b) {
+  const aNum = parseLeadingNumberFromId(a.id);
+  const bNum = parseLeadingNumberFromId(b.id);
+
+  if (aNum != null && bNum != null) {
+    if (aNum !== bNum) return aNum - bNum;
+    return (a.title || '').localeCompare(b.title || '', 'ru');
+  }
+
+  if (aNum != null) return -1;
+  if (bNum != null) return 1;
+
+  return (a.title || '').localeCompare(b.title || '', 'ru');
+}
+
 export function sanitizeIdentifier(identifier = '') {
   if (identifier == null) {
     return '';
@@ -49,7 +69,8 @@ export async function loadQuizManifest() {
         author: typeof quiz.author === 'string' ? quiz.author : '',
       };
     })
-    .filter(Boolean);
+    .filter(Boolean)
+    .sort(compareQuizzes);
 }
 
 export async function loadQuizConfig(quizId) {

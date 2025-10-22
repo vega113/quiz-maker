@@ -18,6 +18,26 @@ function sanitizeIdentifier(identifier = '') {
     .replace(/-{2,}/g, '-');
 }
 
+function parseLeadingNumberFromId(id = '') {
+  const match = /^([0-9]+)/.exec(id);
+  return match ? parseInt(match[1], 10) : null;
+}
+
+function compareQuizzes(a, b) {
+  const aNum = parseLeadingNumberFromId(a.id);
+  const bNum = parseLeadingNumberFromId(b.id);
+
+  if (aNum != null && bNum != null) {
+    if (aNum !== bNum) return aNum - bNum;
+    return (a.title || '').localeCompare(b.title || '', 'ru');
+  }
+
+  if (aNum != null) return -1;
+  if (bNum != null) return 1;
+
+  return (a.title || '').localeCompare(b.title || '', 'ru');
+}
+
 function readQuizFiles() {
   if (!fs.existsSync(QUIZ_DIR)) {
     throw new Error(`Quiz directory not found: ${QUIZ_DIR}`);
@@ -67,7 +87,7 @@ function buildManifest() {
   return {
     generatedAt: new Date().toISOString(),
     quizzes: quizzes
-      .sort((a, b) => a.title.localeCompare(b.title, 'ru'))
+      .sort(compareQuizzes)
       .map(({ filename, ...rest }) => rest),
   };
 }
