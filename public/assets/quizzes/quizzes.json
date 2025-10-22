@@ -1,30 +1,72 @@
 {
-  "generatedAt": "2025-10-22T17:18:23.565Z",
+  "generatedAt": "2025-10-22T17:51:08.275Z",
   "quizzes": [
     {
-      "id": "voice-training-quiz",
-      "title": "Голос — сила уверенного спикера",
+      "id": "2-voice-training-quiz",
+      "title": "Голос - визитная карточка человека",
       "description": "Проверьте, насколько вы понимаете принципы работы с голосом, чтобы звучать убедительно, глубоко и естественно.",
       "sourceUrl": "https://youtu.be/_e2xr6MAbrU",
-      "author": "Pracara school"
+      "author": "Экантика"
     },
     {
-      "id": "public-speaking",
+      "id": "7-make-a-memorable-speech",
+      "title": "Как сделать выступление запоминающимся",
+      "description": "Проверьте, насколько вы умеете создавать яркие и запоминающиеся публичные выступления.",
+      "sourceUrl": "https://www.youtube.com/watch?v=BCvXmmgMtz4",
+      "author": "Pracara School"
+    },
+    {
+      "id": "10-public-speaking",
       "title": "Контент для захватывающего выступления",
       "description": "Проверьте, насколько уверенно вы управляете вниманием аудитории.",
       "sourceUrl": "https://youtu.be/gey82mRNAco",
       "author": "Риддхи"
     },
     {
-      "id": "working-with-voice",
-      "title": "Работа с голосом",
-      "description": "Проверьте, насколько хорошо вы освоили базовые принципы работы с телом, голосом и дикцией.",
-      "sourceUrl": "https://www.youtube.com/watch?v=T_GN5Ms-RRk",
-      "author": "Pracara School"
+      "id": "5-podgotovka-k-vystupleniyu",
+      "title": "Подготовка к выступлению",
+      "description": "Проверьте, насколько хорошо вы усвоили ключевые принципы подготовки к публичным выступлениям.",
+      "sourceUrl": "https://youtu.be/YtfAaVdHwtU",
+      "author": "Дживаприя (Pracara school)"
     },
     {
-      "id": "quiz-managing-emotions-speaker",
+      "id": "9-preparation-for-public-speaking",
+      "title": "Подготовка к выступлению",
+      "description": "Проверьте, насколько глубоко вы поняли основы эффективной подготовки к публичным выступлениям.",
+      "sourceUrl": "https://youtu.be/YtfAaVdHwtU",
+      "author": "Дживаприя"
+    },
+    {
+      "id": "3-working-with-voice",
+      "title": "Работа с голосом",
+      "description": "Проверьте, насколько хорошо вы освоили базовые принципы работы с телом, голосом и дикцией.",
+      "sourceUrl": "https://youtu.be/T_GN5Ms-RRk",
+      "author": "Экантика"
+    },
+    {
+      "id": "4-rabota-s-emotsiyami",
       "title": "Работа с эмоциями спикера",
+      "description": "Проверьте, насколько вы умеете управлять волнением и превращать эмоции в энергию вдохновения.",
+      "sourceUrl": "https://youtu.be/eKLzHKkvVDM",
+      "author": "Дживаприя"
+    },
+    {
+      "id": "8-happiness-of-a-fool",
+      "title": "Счастье дурака",
+      "description": "Проверьте, насколько глубоко вы поняли философию счастья Славы Полунина.",
+      "sourceUrl": "https://youtu.be/4LxwbPFLUHY",
+      "author": "Слава Полунин"
+    },
+    {
+      "id": "6-three-whales-of-public-speaking",
+      "title": "Три кита успешного публичного выступления",
+      "description": "Проверьте, насколько глубоко вы понимаете основы успешного публичного выступления.",
+      "sourceUrl": "https://youtu.be/3BPn7u-BEaY",
+      "author": "Икантика (Pracara School)"
+    },
+    {
+      "id": "1-quiz-managing-emotions-speaker",
+      "title": "Эмоции спикера, страх публичных выступлений",
       "description": "Проверьте, насколько хорошо вы умеете управлять волнением и превращать страх в энергию вдохновения.",
       "sourceUrl": "https://www.youtube.com/watch?v=eKLzHKkvVDM",
       "author": "Дживаприя (Pracara School)"

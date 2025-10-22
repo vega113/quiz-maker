@@ -51,7 +51,7 @@ button:hover {
   background: #e6f8ec;
   color: #2e7d32;
   font-weight: 600;
-  display: none;
+  // removed display:none; rely on [hidden] attribute for visibility control
 }
 
 .tip {
