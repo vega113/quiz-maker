@@ -10,6 +10,7 @@ A lightweight web-based quiz interface scaffolding. Use this project to experime
 - `src/services/`: Data helpers such as `quiz-loader.js` for fetching quiz JSON.
 - `styles/`: Shared stylesheet files (`styles/main.css` contains the base theme).
 - `public/assets/quizzes/`: Quiz JSON definitions that can be added/dropped independently.
+- `scripts/generate-quizzes-manifest.js`: Scans quiz JSON files and generates `public/assets/quizzes/quizzes.json` used by the Menu view.
 - `package.json`: Node tooling placeholder.
 - `dist/`: Bundler output (ignored by git).
 - `tests/`: Vitest suites mirroring modules under `src/`.
@@ -24,7 +25,11 @@ A lightweight web-based quiz interface scaffolding. Use this project to experime
    ```sh
    npx http-server . --port 4173
    ```
-3. When the project grows, add a bundler (Vite or Parcel) configured to emit into `dist/` and document it under an `npm run build` script.
+3. If you add or edit quiz files, regenerate the manifest so the Menu sees changes:
+   ```sh
+   npm run generate:manifest
+   ```
+4. When the project grows, add a bundler (Vite or Parcel) configured to emit into `dist/` and document it under an `npm run build` script.
 
 ### Routing & Static Hosting
 
@@ -40,11 +45,14 @@ The app reads the pathname to decide which view to render. Serve it with a stati
 
 ## Adding a New Quiz
 
-1. Create a JSON file under `public/assets/quizzes/` (e.g., `history-basics.json`) using the shape below:
+1. Create a JSON file under `public/assets/quizzes/` (e.g., `history-basics.json`) using the shape below. You can include optional metadata: `author`, `sourceUrl`, and a markdown-formatted `summary` that will be shown as a collapsible section on the Menu and on the Quiz page (collapsed by default).
    ```json
    {
      "title": "History Basics",
      "description": "Quick check on history milestones.",
+     "author": "Jane Doe",
+     "sourceUrl": "https://example.com/lecture",
+     "summary": "**Key points:**\n\n- Columbus sailed in 1492\n- Use rational and emotional arguments\n\n*Tip:* keep it concise.",
      "tipPenalty": 0.5,
      "questions": [
        {
@@ -56,13 +64,30 @@ The app reads the pathname to decide which view to render. Serve it with a stati
      ]
    }
    ```
-2. Regenerate the manifest so the menu picks it up:
+   Notes:
+   - The `summary` is a string with Markdown. Because it lives in JSON, escape newlines as `\n` and quotes as needed.
+   - Supported markdown in UI: **bold**, *italic*, `code`, [links](https://example.com), and simple `-`/`*` bullet lists. Line breaks and paragraphs are rendered.
+2. Regenerate the manifest so the Menu picks it up (and so summaries appear in the Menu list):
    ```sh
    npm run generate:manifest
    ```
-   The script scans quiz files, extracts titles/descriptions, and writes `public/assets/quizzes/quizzes.json`.
+   The script scans quiz files, extracts titles/descriptions/optional metadata (including `summary`), and writes `public/assets/quizzes/quizzes.json`.
 3. Launch the app at `/menu` to see the menu. Menu links use the query-string form (`?quiz=<id>`) so they work even on servers without SPA rewrites. You can also open `index.html?quiz=history-basics` directly.
 4. The loader sanitizes IDs (`a-z0-9-_`), so match the filename and desired URL slug.
+
+## Summaries (optional)
+
+- If a quiz JSON contains a `summary` field (markdown string), the UI shows a small toggle labeled "▶ Краткое содержание":
+  - On the Menu page: under the quiz card; collapsed by default.
+  - On the Quiz page: under the header; collapsed by default.
+- Clicking the toggle expands/collapses the rendered markdown summary; the icon switches between `▶` and `▼`.
+- Accessibility: toggle buttons expose `aria-expanded` and are linked to the content via `aria-controls` and matching element `id`.
+
+### Quick verify
+
+- After adding/editing a quiz file, run `npm run generate:manifest`.
+- Open `/menu`: quizzes with a summary will show the toggle; expand to see formatted summary.
+- Open a quiz via `?quiz=<id>`: the same toggle appears beneath the title/description.
 
 ## Formatting & Testing
 
