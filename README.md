@@ -107,6 +107,96 @@ Authoring tips
 - Use `---` to visually separate large sections.
 - Remember to escape newlines as `\n` inside JSON strings and re-run `npm run generate:manifest` so the Menu gets the updated summary.
 
+## Writing great summaries (guidelines)
+
+This section explains how to craft user-friendly, great-looking summaries that render beautifully in our UI and fit within the supported markdown subset. See also: “Markdown support for summaries”.
+
+Essentials
+- Purpose: help readers preview the lecture and recall key ideas quickly. Summaries should be scannable and action-oriented.
+- Length: 120–250 words (800–1600 characters) is a good target; aim for 4–7 short sections or 6–10 bullets.
+- Voice and tone: concise, positive, practical. Prefer verbs and outcomes over abstract definitions.
+- Readability: short lines (max ~90 characters), avoid long paragraphs. One idea per bullet.
+
+Recommended structure
+- Start with a compact H3 title line:
+  - `### Конспект лекции` or `### Ключевые идеи`
+- Organize content into small sections (H4) followed by bullets:
+  - `#### 1. Тема/раздел`
+  - `- 2–4` коротких пункта, каждый с одним действием/выводом
+- Use horizontal rules `---` to separate larger blocks if the summary is long.
+- Close with a “mini-вывод” or “Совет” в 1–2 строчках.
+
+Styling dos and don’ts
+- Do use:
+  - H3/H4 headings for hierarchy (`###`, `####`).
+  - Bullets `- ` for lists; numbered lists `1.` only for linear шагов (без вложенности).
+  - Bold to highlight ключевые термины: `**главная идея**`.
+  - Short links with human-readable text: `[исследование Гарварда](https://example.com)`.
+- Don’t use (not supported or hurts readability):
+  - Nested lists, tables, blockquotes, images, raw HTML, fenced code blocks.
+  - Длинные абзацы >4 строк, “стены текста”.
+  - Сырые URL без якорного текста.
+
+Content checklist
+- [ ] Есть H3 заголовок (например, "### Конспект лекции").
+- [ ] 4–7 разделов или 6–10 пунктов, каждый короткий и самостоятельный.
+- [ ] Крупные блоки отделены `---` при необходимости.
+- [ ] Нет вложенных списков и слишком длинных абзацев.
+- [ ] Ключевые термины выделены `**жирным**` (умеренно).
+- [ ] В конце есть мини‑совет или вывод (1–2 строки).
+- [ ] Для меню сгенерирован манифест: `npm run generate:manifest`.
+
+Two ready-to-use templates
+
+Template A — sectioned outline
+```
+### Конспект лекции
+
+#### 1. Контекст / зачем
+- Проблема или цель в 1–2 строках
+- Ожидаемый результат для слушателя
+
+#### 2. Ключевые принципы
+- Принцип 1 — коротко, с глаголом
+- Принцип 2 — коротко, с глаголом
+
+#### 3. Практика
+- Упражнение 1 — 1 строка
+- Упражнение 2 — 1 строка
+
+---
+
+Совет: 1–2 строки, что сделать прямо сегодня.
+```
+
+Template B — numbered steps + bullets
+```
+### Ключевые шаги
+
+1. Подготовка
+- 2–3 коротких действия
+
+2. Действие
+- 2–3 коротких действия
+
+3. Итог
+- Ожидаемый результат / критерий успеха
+
+---
+
+Вывод: 1 строка про пользу и следующий шаг.
+```
+
+Examples in this repo
+- Посмотрите готовые `summary` в: `public/assets/quizzes/6-make-a-memorable-speech.json`, `9-public-speaking.json`, `5-three-whales-of-public-speaking.json` — они следуют рекомендованной структуре.
+
+Maintenance notes
+- После редактирования `summary` перегенерируйте манифест, чтобы обновления появились в Меню:
+  ```sh
+  npm run generate:manifest
+  ```
+- Тестируйте отображение на обеих страницах: `/menu` и `?quiz=<id>`.
+
 ### Quick verify
 
 - After adding/editing a quiz file, run `npm run generate:manifest`.
