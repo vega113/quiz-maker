@@ -80,6 +80,8 @@ function buildManifest() {
       // pass-through optional metadata so the menu can show them
       sourceUrl: typeof data.sourceUrl === 'string' ? data.sourceUrl : undefined,
       author: typeof data.author === 'string' ? data.author : undefined,
+      // include optional summary so it can be toggled from the menu
+      summary: typeof data.summary === 'string' ? data.summary : undefined,
       filename,
     };
   });

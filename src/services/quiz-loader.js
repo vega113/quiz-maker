@@ -67,6 +67,8 @@ export async function loadQuizManifest() {
         // optional metadata for rendering in menu
         sourceUrl: typeof quiz.sourceUrl === 'string' ? quiz.sourceUrl : '',
         author: typeof quiz.author === 'string' ? quiz.author : '',
+        // pass-through summary for collapsible preview in menu
+        summary: typeof quiz.summary === 'string' ? quiz.summary : '',
       };
     })
     .filter(Boolean)

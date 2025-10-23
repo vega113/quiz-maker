@@ -169,10 +169,13 @@ function showQuiz(quiz) {
     const summaryToggle = document.createElement('button');
     summaryToggle.classList.add('quiz-menu__summary-toggle');
     summaryToggle.type = 'button';
+    summaryToggle.setAttribute('aria-expanded', 'false');
+    summaryToggle.setAttribute('aria-controls', 'quiz-summary');
     summaryToggle.innerHTML = '<span class="quiz-menu__summary-icon">▶</span> Краткое содержание';
     
     const summaryContent = document.createElement('div');
     summaryContent.classList.add('quiz-menu__summary-content');
+    summaryContent.id = 'quiz-summary';
     summaryContent.innerHTML = markdownToHtml(quiz.summary);
     summaryContent.hidden = true;
     
@@ -182,6 +185,7 @@ function showQuiz(quiz) {
       summaryContent.hidden = !isHidden;
       const icon = summaryToggle.querySelector('.quiz-menu__summary-icon');
       icon.textContent = isHidden ? '▼' : '▶';
+      summaryToggle.setAttribute('aria-expanded', String(isHidden));
     });
     
     quizSummaryContainer.appendChild(summaryToggle);
