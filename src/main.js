@@ -5,7 +5,7 @@ import {
   sanitizeIdentifier,
 } from './services/quiz-loader.js';
 import { mountQuiz } from './components/quiz.js';
-import { renderMenu } from './components/menu.js';
+import { renderMenu, markdownToHtml } from './components/menu.js';
 
 const quizContainer = document.getElementById('quiz');
 const resultContainer = document.getElementById('result');
@@ -18,8 +18,10 @@ const quizView = document.getElementById('quiz-view');
 const quizList = document.getElementById('quiz-list');
 const quizMetaExtra = document.getElementById('quiz-meta-extra');
 const backNav = document.getElementById('back-nav');
+const quizMetaHeader = document.querySelector('.quiz-meta');
 
 let cleanupQuiz = null;
+let quizSummaryContainer = null;
 
 function showMessage(text, tone = 'info') {
   messageBox.textContent = text;
@@ -79,6 +81,12 @@ function showMenu(manifest) {
   if (cleanupQuiz) {
     cleanupQuiz();
     cleanupQuiz = null;
+  }
+
+  // Clean up quiz summary if it exists
+  if (quizSummaryContainer) {
+    quizSummaryContainer.remove();
+    quizSummaryContainer = null;
   }
 
   quizTitle.textContent = 'Выберите викторину';
@@ -145,6 +153,40 @@ function showQuiz(quiz) {
     } else {
       quizMetaExtra.hidden = true;
     }
+  }
+
+  // Render optional summary (collapsible)
+  if (quizSummaryContainer) {
+    quizSummaryContainer.remove();
+    quizSummaryContainer = null;
+  }
+
+  if (quiz.summary && quizMetaHeader) {
+    quizSummaryContainer = document.createElement('div');
+    quizSummaryContainer.classList.add('quiz-menu__summary-container');
+    quizSummaryContainer.style.marginTop = '20px';
+    
+    const summaryToggle = document.createElement('button');
+    summaryToggle.classList.add('quiz-menu__summary-toggle');
+    summaryToggle.type = 'button';
+    summaryToggle.innerHTML = '<span class="quiz-menu__summary-icon">▶</span> Краткое содержание';
+    
+    const summaryContent = document.createElement('div');
+    summaryContent.classList.add('quiz-menu__summary-content');
+    summaryContent.innerHTML = markdownToHtml(quiz.summary);
+    summaryContent.hidden = true;
+    
+    summaryToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isHidden = summaryContent.hidden;
+      summaryContent.hidden = !isHidden;
+      const icon = summaryToggle.querySelector('.quiz-menu__summary-icon');
+      icon.textContent = isHidden ? '▼' : '▶';
+    });
+    
+    quizSummaryContainer.appendChild(summaryToggle);
+    quizSummaryContainer.appendChild(summaryContent);
+    quizMetaHeader.appendChild(quizSummaryContainer);
   }
 
   document.title = `${quiz.title} — Quiz Maker`;
