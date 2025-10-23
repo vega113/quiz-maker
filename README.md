@@ -75,6 +75,17 @@ The app reads the pathname to decide which view to render. Serve it with a stati
 3. Launch the app at `/menu` to see the menu. Menu links use the query-string form (`?quiz=<id>`) so they work even on servers without SPA rewrites. You can also open `index.html?quiz=history-basics` directly.
 4. The loader sanitizes IDs (`a-z0-9-_`), so match the filename and desired URL slug.
 
+### Generate a quiz via AI prompt (recommended)
+
+- Use the curated prompt in `quizz-prompt.md` to generate a production‑ready quiz JSON from a YouTube lecture (course: “Art of Speech”).
+- The prompt enforces our formatting rules for `summary` (H3/H4 + bullets only, no nested lists) and teaches the model to produce comprehensive, learning‑oriented tips.
+- It scales for long videos: summaries may exceed 600–1200+ words if needed. Focus is on completeness and readability.
+- Workflow:
+  1) Open `quizz-prompt.md` and paste it into your LLM. Provide the lecture’s YouTube URL and any context (speaker, series, target audience).
+  2) Ask for the final JSON output only. Validate it with a JSON linter if needed.
+  3) Save to `public/assets/quizzes/<slug>.json` and run `npm run generate:manifest`.
+  4) Open `/menu` and the quiz page (`?quiz=<id>`) to review rendering.
+
 ## Summaries (optional)
 
 - If a quiz JSON contains a `summary` field (markdown string), the UI shows a small toggle labeled "▶ Краткое содержание":
