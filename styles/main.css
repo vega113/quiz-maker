@@ -567,6 +567,27 @@ button.tip:disabled {
   margin: 6px 0;
 }
 
+/* Headings inside summary content */
+.quiz-menu__summary-content h2,
+.quiz-menu__summary-content h3,
+.quiz-menu__summary-content h4,
+.quiz-menu__summary-content h5,
+.quiz-menu__summary-content h6 {
+  margin: 12px 0 8px;
+  color: #1a202c;
+  font-weight: 700;
+}
+
+/* Ordered lists inside summary content */
+.quiz-menu__summary-content ol {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.quiz-menu__summary-content li > strong {
+  color: #5a67d8;
+}
+
 .quiz-menu__summary-content strong {
   color: #5a67d8;
   font-weight: 600;
@@ -596,6 +617,14 @@ button.tip:disabled {
 .quiz-menu__summary-content a:hover {
   color: #764ba2;
   text-decoration: underline;
+}
+
+/* Horizontal rule inside summary content */
+.quiz-menu__summary-content hr {
+  border: none;
+  border-top: 1px dashed #cbd5e0;
+  margin: 16px 0;
+  opacity: 0.9;
 }
 
 #check-answers {
