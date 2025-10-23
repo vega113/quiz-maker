@@ -66,7 +66,7 @@ The app reads the pathname to decide which view to render. Serve it with a stati
    ```
    Notes:
    - The `summary` is a string with Markdown. Because it lives in JSON, escape newlines as `\n` and quotes as needed.
-   - Supported markdown in UI: **bold**, *italic*, `code`, [links](https://example.com), and simple `-`/`*` bullet lists. Line breaks and paragraphs are rendered.
+   - See “Markdown support for summaries” below for exactly what is supported and known limitations.
 2. Regenerate the manifest so the Menu picks it up (and so summaries appear in the Menu list):
    ```sh
    npm run generate:manifest
@@ -82,6 +82,30 @@ The app reads the pathname to decide which view to render. Serve it with a stati
   - On the Quiz page: under the header; collapsed by default.
 - Clicking the toggle expands/collapses the rendered markdown summary; the icon switches between `▶` and `▼`.
 - Accessibility: toggle buttons expose `aria-expanded` and are linked to the content via `aria-controls` and matching element `id`.
+
+### Markdown support for summaries
+
+Supported elements
+- Headings: `##`–`######` at the start of a line (H2–H6). H1 (`#`) is intentionally not used to keep typography balanced in cards and headers.
+- Unordered lists: lines beginning with `- ` or `* `.
+- Ordered lists: lines beginning with `1. `, `2. `, etc. Use consecutive list items without other blocks in between to keep numbering continuous.
+- Horizontal rules: a line containing only `---`, `***`, or `___`.
+- Paragraphs and line breaks: blank lines create new paragraphs; single newlines inside a paragraph render as a line break.
+- Inline formatting: **bold** (`**text**`), *italic* (`*text*`), inline `code` (`` `code` ``), and [links](https://example.com) (`[text](url)`).
+
+Limitations (not supported)
+- Nested lists (e.g., bullets inside numbered items) are not supported.
+- Continuing an ordered list across other block elements (like paragraphs or ULs) is not supported; each new list starts at 1.
+- Markdown tables, blockquotes, images, strikethrough, task lists, and fenced code blocks are not supported.
+- HTML blocks and inline HTML are not rendered.
+- Auto-linking plain URLs isn’t supported — wrap them as `[text](url)`.
+
+Authoring tips
+- For numbered sections that include bullet points, prefer headings with explicit numbering, for example:
+  - `### 1. Подготовка тела — основа голоса`
+  - Followed by bullet points with `- ` on the next lines
+- Use `---` to visually separate large sections.
+- Remember to escape newlines as `\n` inside JSON strings and re-run `npm run generate:manifest` so the Menu gets the updated summary.
 
 ### Quick verify
 
