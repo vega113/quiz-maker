@@ -502,6 +502,102 @@ button.tip:disabled {
   text-decoration: underline;
 }
 
+.quiz-menu__summary-container {
+  margin-top: 16px;
+}
+
+.quiz-menu__summary-toggle {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #4a5568;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  font-family: inherit;
+}
+
+.quiz-menu__summary-toggle:hover {
+  background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+  border-color: #cbd5e0;
+  color: #2d3748;
+}
+
+.quiz-menu__summary-icon {
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 0.8rem;
+  transition: transform 0.2s ease;
+  color: #667eea;
+}
+
+.quiz-menu__summary-content {
+  margin-top: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  border-radius: 12px;
+  border-left: 4px solid #667eea;
+  color: #2d3748;
+  line-height: 1.7;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+  animation: fadeIn 0.3s ease;
+}
+
+.quiz-menu__summary-content p {
+  margin: 0 0 12px;
+}
+
+.quiz-menu__summary-content p:last-child {
+  margin-bottom: 0;
+}
+
+.quiz-menu__summary-content ul {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.quiz-menu__summary-content li {
+  margin: 6px 0;
+}
+
+.quiz-menu__summary-content strong {
+  color: #5a67d8;
+  font-weight: 600;
+}
+
+.quiz-menu__summary-content em {
+  color: #6b46c1;
+  font-style: italic;
+}
+
+.quiz-menu__summary-content code {
+  background: rgba(102, 126, 234, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+  color: #5a67d8;
+}
+
+.quiz-menu__summary-content a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.quiz-menu__summary-content a:hover {
+  color: #764ba2;
+  text-decoration: underline;
+}
+
 #check-answers {
   display: block;
   margin: 32px auto;
