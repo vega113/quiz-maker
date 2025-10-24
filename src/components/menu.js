@@ -122,18 +122,41 @@ export function markdownToHtml(markdown) {
   return htmlParts.join('');
 }
 
-export function renderMenu({ manifest, container }) {
+export function renderMenu({ manifest, container, activeSubjectId = '' }) {
   container.innerHTML = '';
 
-  const subjects = manifest?.subjects ?? [];
-  const totalQuizzes = manifest?.quizzes ?? [];
+  const allSubjects = manifest?.subjects ?? [];
+  const normalizedSubjectId = (activeSubjectId || '').toLowerCase();
+  const subjects = normalizedSubjectId
+    ? allSubjects.filter((subject) => subject.id.toLowerCase() === normalizedSubjectId)
+    : allSubjects;
+  const totalQuizzes = subjects.flatMap((subject) => subject.quizzes || []);
 
-  if (!subjects.length || !totalQuizzes.length) {
+  if (!subjects.length) {
     const emptyState = document.createElement('li');
     emptyState.classList.add('quiz-menu__item');
-    emptyState.textContent = 'Викторины не найдены. Добавьте JSON-файлы в public/assets/quizzes и обновите manifest.';
+    emptyState.textContent = normalizedSubjectId
+      ? 'Раздел не найден. Проверьте идентификатор предмета.'
+      : 'Викторины не найдены. Добавьте JSON-файлы в public/assets/quizzes и обновите manifest.';
     container.appendChild(emptyState);
     return;
+  }
+
+  if (normalizedSubjectId) {
+    const backItem = document.createElement('li');
+    backItem.classList.add('quiz-subject__back');
+
+    const backLink = document.createElement('a');
+    backLink.classList.add('quiz-subject__back-link');
+    const url = new URL(window.location.href);
+    url.searchParams.delete('subject');
+    url.searchParams.delete('quiz');
+    const query = url.searchParams.toString();
+    backLink.href = `${url.pathname}${query ? `?${query}` : ''}`;
+    backLink.textContent = '← Все предметы';
+
+    backItem.appendChild(backLink);
+    container.appendChild(backItem);
   }
 
   subjects.forEach((subject) => {
@@ -188,7 +211,8 @@ export function renderMenu({ manifest, container }) {
     quizList.classList.add('quiz-subject__list');
     const quizListId = `subject-quizzes-${subject.id}`;
     quizList.id = quizListId;
-    quizList.hidden = true;
+    const isSubjectActive = !!normalizedSubjectId;
+    quizList.hidden = !isSubjectActive;
 
     let listToggle = null;
 
@@ -203,13 +227,19 @@ export function renderMenu({ manifest, container }) {
       listToggle.classList.add('quiz-menu__summary-toggle', 'quiz-subject__quizzes-toggle');
       listToggle.type = 'button';
       listToggle.setAttribute('aria-controls', quizListId);
-      listToggle.setAttribute('aria-expanded', 'false');
+      listToggle.setAttribute('aria-expanded', String(isSubjectActive));
 
       const toggleIcon = document.createElement('span');
       toggleIcon.classList.add('quiz-menu__summary-icon');
-      toggleIcon.textContent = '▶';
+      toggleIcon.textContent = isSubjectActive ? '▼' : '▶';
       listToggle.appendChild(toggleIcon);
-      listToggle.appendChild(document.createTextNode(` Показать викторины (${subject.quizzes.length})`));
+      listToggle.appendChild(
+        document.createTextNode(
+          isSubjectActive
+            ? ` Скрыть викторины (${subject.quizzes.length})`
+            : ` Показать викторины (${subject.quizzes.length})`,
+        ),
+      );
 
       listToggle.addEventListener('click', (e) => {
         e.preventDefault();

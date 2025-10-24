@@ -51,6 +51,11 @@ function resolveRoute() {
     return { type: 'quiz', id: queryQuiz };
   }
 
+  const querySubject = sanitizeIdentifier(params.get('subject'));
+  if (querySubject) {
+    return { type: 'subject', id: querySubject };
+  }
+
   const segments = getPathSegments();
 
   if (segments.length === 0) {
@@ -77,7 +82,7 @@ function resolveRoute() {
   return { type: 'menu' };
 }
 
-function showMenu(manifest) {
+function showMenu(manifest, { subjectId } = {}) {
   if (cleanupQuiz) {
     cleanupQuiz();
     cleanupQuiz = null;
@@ -89,13 +94,18 @@ function showMenu(manifest) {
     quizSummaryContainer = null;
   }
 
-  quizTitle.textContent = 'Выберите викторину';
-  quizDescription.textContent = '';
+  let subjectMeta = null;
+  if (subjectId) {
+    subjectMeta = manifest?.subjects?.find((subject) => subject.id === subjectId) || null;
+  }
+
+  quizTitle.textContent = subjectMeta ? `Раздел: ${subjectMeta.title}` : 'Выберите викторину';
+  quizDescription.textContent = subjectMeta ? subjectMeta.description || '' : '';
   if (quizMetaExtra) {
     quizMetaExtra.textContent = '';
     quizMetaExtra.hidden = true;
   }
-  document.title = 'Quiz Maker — Меню';
+  document.title = subjectMeta ? `${subjectMeta.title} — Quiz Maker` : 'Quiz Maker — Меню';
 
   quizView.hidden = true;
   checkButton.hidden = true;
@@ -104,7 +114,7 @@ function showMenu(manifest) {
     backNav.hidden = true;
   }
 
-  renderMenu({ manifest, container: quizList });
+  renderMenu({ manifest, container: quizList, activeSubjectId: subjectId });
   menuView.hidden = false;
 }
 
@@ -209,9 +219,10 @@ async function bootstrap() {
   try {
     const route = resolveRoute();
 
-    if (route.type === 'menu') {
+    if (route.type === 'menu' || route.type === 'subject') {
       const manifest = await loadQuizManifest();
-      showMenu(manifest);
+      const subjectId = route.type === 'subject' ? route.id : undefined;
+      showMenu(manifest, { subjectId });
       checkButton.disabled = false;
       return;
     }
