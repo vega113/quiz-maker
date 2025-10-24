@@ -207,143 +207,119 @@ export function renderMenu({ manifest, container, activeSubjectId = '' }) {
       subjectItem.appendChild(summaryContainer);
     }
 
-    const quizList = document.createElement('ul');
-    quizList.classList.add('quiz-subject__list');
-    const quizListId = `subject-quizzes-${subject.id}`;
-    quizList.id = quizListId;
-    const isSubjectActive = !!normalizedSubjectId;
-    quizList.hidden = !isSubjectActive;
+    if (subject.quizzes.length && !normalizedSubjectId) {
+      const subjectLink = document.createElement('a');
+      subjectLink.classList.add('quiz-subject__open-link');
+      const url = new URL(window.location.href);
+      url.searchParams.set('subject', subject.id);
+      url.searchParams.delete('quiz');
+      subjectLink.href = `${url.pathname}?${url.searchParams.toString()}`;
+      subjectLink.innerHTML = '<span class="quiz-menu__summary-icon">▶</span> Перейти к разделу';
+      subjectItem.appendChild(subjectLink);
+    }
 
-    let listToggle = null;
-
-    if (!subject.quizzes.length) {
-      const emptyQuizItem = document.createElement('li');
-      emptyQuizItem.classList.add('quiz-menu__item');
-      emptyQuizItem.textContent = 'Викторины не найдены в этом разделе.';
-      quizList.appendChild(emptyQuizItem);
+    if (normalizedSubjectId || !subject.quizzes.length) {
+      const quizList = document.createElement('ul');
+      quizList.classList.add('quiz-subject__list');
       quizList.hidden = false;
-    } else {
-      listToggle = document.createElement('button');
-      listToggle.classList.add('quiz-menu__summary-toggle', 'quiz-subject__quizzes-toggle');
-      listToggle.type = 'button';
-      listToggle.setAttribute('aria-controls', quizListId);
-      listToggle.setAttribute('aria-expanded', String(isSubjectActive));
+      quizList.id = `subject-quizzes-${subject.id}`;
 
-      const toggleIcon = document.createElement('span');
-      toggleIcon.classList.add('quiz-menu__summary-icon');
-      toggleIcon.textContent = isSubjectActive ? '▼' : '▶';
-      listToggle.appendChild(toggleIcon);
-      listToggle.appendChild(
-        document.createTextNode(
-          isSubjectActive
-            ? ` Скрыть викторины (${subject.quizzes.length})`
-            : ` Показать викторины (${subject.quizzes.length})`,
-        ),
-      );
+      if (!subject.quizzes.length) {
+        const emptyQuizItem = document.createElement('li');
+        emptyQuizItem.classList.add('quiz-menu__item');
+        emptyQuizItem.textContent = 'Викторины не найдены в этом разделе.';
+        quizList.appendChild(emptyQuizItem);
+      } else {
+        subject.quizzes.forEach((quiz) => {
+          const quizItem = document.createElement('li');
+          quizItem.classList.add('quiz-menu__item');
 
-      listToggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        const isHidden = quizList.hidden;
-        quizList.hidden = !isHidden;
-        toggleIcon.textContent = isHidden ? '▼' : '▶';
-        listToggle.setAttribute('aria-expanded', String(isHidden));
-        listToggle.lastChild.textContent = isHidden
-          ? ` Скрыть викторины (${subject.quizzes.length})`
-          : ` Показать викторины (${subject.quizzes.length})`;
-      });
+          const link = document.createElement('a');
+          link.classList.add('quiz-menu__link');
+          link.href = `?quiz=${quiz.id}`;
+          link.textContent = quiz.title;
 
-      subject.quizzes.forEach((quiz) => {
-        const quizItem = document.createElement('li');
-        quizItem.classList.add('quiz-menu__item');
+          const description = document.createElement('p');
+          description.classList.add('quiz-menu__description');
+          description.textContent = quiz.description;
 
-        const link = document.createElement('a');
-        link.classList.add('quiz-menu__link');
-        link.href = `?quiz=${quiz.id}`;
-        link.textContent = quiz.title;
+          quizItem.appendChild(link);
 
-        const description = document.createElement('p');
-        description.classList.add('quiz-menu__description');
-        description.textContent = quiz.description;
-
-        quizItem.appendChild(link);
-
-        if (quiz.description) {
-          quizItem.appendChild(description);
-        }
-
-        if (quiz.summary) {
-          const summaryContainer = document.createElement('div');
-          summaryContainer.classList.add('quiz-menu__summary-container');
-
-          const summaryToggle = document.createElement('button');
-          summaryToggle.classList.add('quiz-menu__summary-toggle');
-          summaryToggle.type = 'button';
-          summaryToggle.setAttribute('aria-expanded', 'false');
-          const contentId = `menu-summary-${quiz.id}`;
-          summaryToggle.setAttribute('aria-controls', contentId);
-          summaryToggle.innerHTML = '<span class="quiz-menu__summary-icon">▶</span> Краткое содержание';
-
-          const summaryContent = document.createElement('div');
-          summaryContent.classList.add('quiz-menu__summary-content');
-          summaryContent.id = contentId;
-          summaryContent.innerHTML = markdownToHtml(quiz.summary);
-          summaryContent.hidden = true;
-
-          summaryToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            const isHidden = summaryContent.hidden;
-            summaryContent.hidden = !isHidden;
-            const icon = summaryToggle.querySelector('.quiz-menu__summary-icon');
-            icon.textContent = isHidden ? '▼' : '▶';
-            summaryToggle.setAttribute('aria-expanded', String(isHidden));
-          });
-
-          summaryContainer.appendChild(summaryToggle);
-          summaryContainer.appendChild(summaryContent);
-          quizItem.appendChild(summaryContainer);
-        }
-
-        if (quiz.author || quiz.sourceUrl) {
-          const meta = document.createElement('p');
-          meta.classList.add('quiz-menu__meta');
-
-          const parts = [];
-          if (quiz.author) {
-            const authorSpan = document.createElement('span');
-            authorSpan.textContent = `Автор: ${quiz.author}`;
-            parts.push(authorSpan);
+          if (quiz.description) {
+            quizItem.appendChild(description);
           }
 
-          if (quiz.sourceUrl) {
-            const sourceSpan = document.createElement('span');
-            const a = document.createElement('a');
-            a.href = quiz.sourceUrl;
-            a.target = '_blank';
-            a.rel = 'noopener noreferrer';
-            a.textContent = 'Источник';
-            sourceSpan.appendChild(a);
-            parts.push(sourceSpan);
+          if (quiz.summary) {
+            const summaryContainer = document.createElement('div');
+            summaryContainer.classList.add('quiz-menu__summary-container');
+
+            const summaryToggle = document.createElement('button');
+            summaryToggle.classList.add('quiz-menu__summary-toggle');
+            summaryToggle.type = 'button';
+            summaryToggle.setAttribute('aria-expanded', 'false');
+            const contentId = `menu-summary-${quiz.id}`;
+            summaryToggle.setAttribute('aria-controls', contentId);
+            summaryToggle.innerHTML = '<span class="quiz-menu__summary-icon">▶</span> Краткое содержание';
+
+            const summaryContent = document.createElement('div');
+            summaryContent.classList.add('quiz-menu__summary-content');
+            summaryContent.id = contentId;
+            summaryContent.innerHTML = markdownToHtml(quiz.summary);
+            summaryContent.hidden = true;
+
+            summaryToggle.addEventListener('click', (e) => {
+              e.preventDefault();
+              const isHidden = summaryContent.hidden;
+              summaryContent.hidden = !isHidden;
+              const icon = summaryToggle.querySelector('.quiz-menu__summary-icon');
+              icon.textContent = isHidden ? '▼' : '▶';
+              summaryToggle.setAttribute('aria-expanded', String(isHidden));
+            });
+
+            summaryContainer.appendChild(summaryToggle);
+            summaryContainer.appendChild(summaryContent);
+            quizItem.appendChild(summaryContainer);
           }
 
-          parts.forEach((node, idx) => {
-            meta.appendChild(node);
-            if (idx < parts.length - 1) {
-              meta.appendChild(document.createTextNode(' • '));
+          if (quiz.author || quiz.sourceUrl) {
+            const meta = document.createElement('p');
+            meta.classList.add('quiz-menu__meta');
+
+            const parts = [];
+            if (quiz.author) {
+              const authorSpan = document.createElement('span');
+              authorSpan.textContent = `Автор: ${quiz.author}`;
+              parts.push(authorSpan);
             }
-          });
 
-          quizItem.appendChild(meta);
-        }
+            if (quiz.sourceUrl) {
+              const sourceSpan = document.createElement('span');
+              const a = document.createElement('a');
+              a.href = quiz.sourceUrl;
+              a.target = '_blank';
+              a.rel = 'noopener noreferrer';
+              a.textContent = 'Источник';
+              sourceSpan.appendChild(a);
+              parts.push(sourceSpan);
+            }
 
-        quizList.appendChild(quizItem);
-      });
+            parts.forEach((node, idx) => {
+              meta.appendChild(node);
+              if (idx < parts.length - 1) {
+                meta.appendChild(document.createTextNode(' • '));
+              }
+            });
+
+            quizItem.appendChild(meta);
+          }
+
+          quizList.appendChild(quizItem);
+        });
+      }
+
+      subjectItem.appendChild(quizList);
     }
 
-    if (listToggle) {
-      subjectItem.appendChild(listToggle);
-    }
-
-    subjectItem.appendChild(quizList);
     container.appendChild(subjectItem);
   });
 }
