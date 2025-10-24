@@ -13,7 +13,7 @@ API call guidance
 Workflow (multi‑step)
 1) Plan: Outline the coverage (key ideas, techniques, examples, mistakes, exercises, quotes/research). For long videos, propose 8–15+ sections.
 2) Extract: Draft a sectioned summary (H3/H4 + bullets only) per README; include emotional and rhetorical highlights if relevant; scale length to video depth (no hard cap).
-3) Questions: Propose 12–20 questions (for very long videos 18–30) that together cover all major ideas and key secondary points; include at least 2 scenario‑style questions.
+3) Questions: Propose 12–20 questions (for very long videos 18–30) that together cover all major ideas and key secondary points; include at least 2 scenario‑style questions. Каждый вопрос должен содержать ровно 4 варианта ответа.
 4) Validate: Ensure each major idea appears in ≥1 question; minor ideas are sampled; distractors are plausible but clearly inferior; no ambiguous wording.
 5) Output: Emit final JSON exactly in schema.
 
@@ -52,7 +52,7 @@ JSON schema
   - tipPenalty: number (0.5 recommended)
   - questions: array of objects
     - prompt: string (clear, single idea)
-    - answers: array of 3–5 strings (one correct)
+    - answers: array of exactly 4 strings (one correct)
     - correctIndex: integer (0‑based)
     - tip: string (teaching explanation, 3–6 sentences)
 
@@ -62,6 +62,7 @@ Validation checklist (apply before output)
 - [ ] Length scales to content (no cap): short videos ≈ 250–450 words; long videos 600–1200+ words (or more) as needed.
 - [ ] All major ideas from the summary appear in ≥1 question; secondary ideas sampled.
 - [ ] Each tip is explanatory (why right/why others wrong) and actionable (micro‑example or exercise).
+- [ ] У каждого вопроса ровно 4 варианта ответа.
 - [ ] Tone is accurate to the source and keeps useful emotional highlights.
 - [ ] JSON is valid, pretty‑printed, and escapes newlines.
 
@@ -80,7 +81,8 @@ Example quiz JSON (expanded template)
       "answers": [
         "Цветовую палитру слайдов",
         "Цель (действие слушателя) и идею (почему)",
-        "Количество шуток в начале"
+        "Количество шуток в начале",
+        "Какую музыку включить перед входом"
       ],
       "correctIndex": 1,
       "tip": "Начинайте с результата для аудитории: чёткое действие — это компас всей подготовки. Идея объясняет мотивацию слушателя и связывает аргументы. Ошибка — сперва делать слайды: визуал не заменяет смысл. Мини‑упражнение: сформулируйте цель одним глаголом и идею одной фразой." 
@@ -90,7 +92,8 @@ Example quiz JSON (expanded template)
       "answers": [
         "Чтобы использовать модные шрифты",
         "Чтобы выбрать язык, примеры, темп и глубину под группу",
-        "Чтобы увеличить количество слайдов"
+        "Чтобы увеличить количество слайдов",
+        "Чтобы выбрать цвет подсветки сцены"
       ],
       "correctIndex": 1,
       "tip": "Портрет аудитории подсказывает релевантные доводы и примеры — растёт ясность и доверие. Дизайн и количество слайдов не решают проблему попадания в интересы людей. Мини‑упражнение: выпишите 3 интереса аудитории и сопоставьте с ними 3 аргумента." 
@@ -100,7 +103,8 @@ Example quiz JSON (expanded template)
       "answers": [
         "Только факты",
         "Только истории",
-        "Факты + истории: логика и эмоции вместе"
+        "Факты + истории: логика и эмоции вместе",
+        "Только громкость и уверенный голос"
       ],
       "correctIndex": 2,
       "tip": "Связка логики и эмоций работает лучше: факт даёт опору, история — вовлечение и память. Только факты — сухо, только истории — неубедительно. Применение: тезис → аргумент → поддержка → короткий пример из жизни или исследования." 
