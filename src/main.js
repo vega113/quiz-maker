@@ -104,7 +104,7 @@ function showMenu(manifest) {
     backNav.hidden = true;
   }
 
-  renderMenu({ quizzes: manifest, container: quizList });
+  renderMenu({ manifest, container: quizList });
   menuView.hidden = false;
 }
 

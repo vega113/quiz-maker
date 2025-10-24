@@ -9,7 +9,7 @@ A lightweight web-based quiz interface scaffolding. Use this project to experime
 - `src/components/`: UI-specific modules (e.g., `quiz.js` renders the interface).
 - `src/services/`: Data helpers such as `quiz-loader.js` for fetching quiz JSON.
 - `styles/`: Shared stylesheet files (`styles/main.css` contains the base theme).
-- `public/assets/quizzes/`: Quiz JSON definitions that can be added/dropped independently.
+- `public/assets/quizzes/`: Каталоги предметов с викторинами и метаданными (`<subject>/subject.json`).
 - `scripts/generate-quizzes-manifest.js`: Scans quiz JSON files and generates `public/assets/quizzes/quizzes.json` used by the Menu view.
 - `package.json`: Node tooling placeholder.
 - `dist/`: Bundler output (ignored by git).
@@ -45,7 +45,9 @@ The app reads the pathname to decide which view to render. Serve it with a stati
 
 ## Adding a New Quiz
 
-1. Create a JSON file under `public/assets/quizzes/` (e.g., `history-basics.json`) using the shape below. You can include optional metadata: `author`, `sourceUrl`, and a markdown-formatted `summary` that will be shown as a collapsible section on the Menu and on the Quiz page (collapsed by default).
+1. Выберите или создайте папку предмета под `public/assets/quizzes/`. Именуйте её с порядковым префиксом, чтобы управлять сортировкой: `01-art-of-speech/`, `02-meditation/` и т. д.
+2. (Опционально) Добавьте `subject.json` с метаданными предмета — см. раздел ниже.
+3. Создайте файл викторины внутри папки предмета (например, `public/assets/quizzes/02-meditation/meditation-basics.json`) по схеме ниже. Допустимы метаданные: `author`, `sourceUrl`, markdown-`summary` (показывается в меню и на странице квиза, свёрнуто по умолчанию).
    ```json
    {
      "title": "History Basics",
@@ -65,15 +67,16 @@ The app reads the pathname to decide which view to render. Serve it with a stati
    }
    ```
    Notes:
-   - The `summary` is a string with Markdown. Because it lives in JSON, escape newlines as `\n` and quotes as needed.
-   - See “Markdown support for summaries” below for exactly what is supported and known limitations.
-2. Regenerate the manifest so the Menu picks it up (and so summaries appear in the Menu list):
+   - `id` и `legacyId` генерируются автоматически из имени файла, поэтому поле `id` необязательно.
+   - `summary` — markdown-строка. Внутри JSON экранируйте переводы строк `\n` и кавычки.
+   - См. «Markdown support for summaries» ниже для списка поддерживаемых элементов.
+4. Перегенерируйте manifest, чтобы меню увидело новые данные (включая предметы, сводки и ссылки):
    ```sh
    npm run generate:manifest
    ```
-   The script scans quiz files, extracts titles/descriptions/optional metadata (including `summary`), and writes `public/assets/quizzes/quizzes.json`.
-3. Launch the app at `/menu` to see the menu. Menu links use the query-string form (`?quiz=<id>`) so they work even on servers without SPA rewrites. You can also open `index.html?quiz=history-basics` directly.
-4. The loader sanitizes IDs (`a-z0-9-_`), so match the filename and desired URL slug.
+   Скрипт обходит каталоги предметов, собирает метаданные и формирует `public/assets/quizzes/quizzes.json` (манфест v2 с разделами и плоским списком для обратной совместимости).
+5. Откройте `/menu`, чтобы увидеть карточки предметов. Там же можно раскрыть список викторин кнопкой «Показать викторины (N)». Ссылки вида `?quiz=<id>` продолжают работать даже без SPA-роутинга.
+6. Прямой запуск викторины по ссылке `index.html?quiz=<legacyId>` остаётся рабочим (через поле `legacyId` в манифесте).
 
 ### Generate a quiz via AI prompt (recommended)
 
@@ -83,8 +86,40 @@ The app reads the pathname to decide which view to render. Serve it with a stati
 - Workflow:
   1) Open `quizz-prompt.md` and paste it into your LLM. Provide the lecture’s YouTube URL and any context (speaker, series, target audience).
   2) Ask for the final JSON output only. Validate it with a JSON linter if needed.
-  3) Save to `public/assets/quizzes/<slug>.json` and run `npm run generate:manifest`.
+  3) Save to `public/assets/quizzes/<subject>/<slug>.json` and run `npm run generate:manifest`.
   4) Open `/menu` and the quiz page (`?quiz=<id>`) to review rendering.
+
+## Subjects & folder structure
+
+```
+public/assets/quizzes/
+├── 01-art-of-speech/
+│   ├── subject.json          # метаданные предмета (опционально)
+│   ├── 6-make-a-memorable-speech.json
+│   └── ...
+├── 02-meditation/
+│   ├── subject.json
+│   └── ...
+└── quizzes.json              # автогенерируемый manifest (не редактируем вручную)
+```
+
+- **Порядок**: добавляйте числовой префикс (`01-`, `02-`), чтобы управлять сортировкой предметов. Скрипт также принимает `order` из `subject.json`.
+- **subject.json (опционально)** — расширяет карточку предмета в меню:
+  ```json
+  {
+    "title": "Искусство речи",
+    "description": "Ораторское мастерство, голос, аргументация.",
+    "summary": "### О разделе\n\n#### 1. Что внутри\n- ...\n\nСовет: ...",
+    "order": 1
+  }
+  ```
+  - `summary` использует тот же markdown-набор, что и `summary` квиза (H3/H4 + буллеты, без вложенных списков).
+  - `order` (число) переопределяет сортировку, если нужно отличиться от числового префикса каталога.
+- **quiz.json** — храните внутри папки предмета. При генерации манифеста каждый квиз получает:
+  - `id`: `<subjectId>-<quizSlug>` — используется в новых ссылках (`?quiz=<id>`).
+  - `legacyId`: старый slug (по имени файла). Ссылки `?quiz=<legacyId>` остаются рабочими, но в консоль выводится предупреждение.
+  - `path`: относительный путь до файла (например, `01-art-of-speech/6-make-a-memorable-speech.json`).
+- **manifest (quizzes.json)**: содержит только `subjects` со вложенными `quizzes`. Не редактируйте его вручную — всегда запускайте `npm run generate:manifest`.
 
 ## Summaries (optional)
 
@@ -124,7 +159,7 @@ This section explains how to craft user-friendly, great-looking summaries that r
 
 Essentials
 - Purpose: help readers preview the lecture and recall key ideas quickly. Summaries should be scannable and action-oriented.
-- Length: 120–250 words (800–1600 characters) is a good target; aim for 4–7 short sections or 6–10 bullets.
+- Length: адаптируйте под хронометраж. Для коротких роликов — 250–450 слов; для длинных (40–90+ мин) — смело расширяйтесь до 600–1200+ слов, если это нужно для полноты.
 - Voice and tone: concise, positive, practical. Prefer verbs and outcomes over abstract definitions.
 - Readability: short lines (max ~90 characters), avoid long paragraphs. One idea per bullet.
 
@@ -150,7 +185,7 @@ Styling dos and don’ts
 
 Content checklist
 - [ ] Есть H3 заголовок (например, "### Конспект лекции").
-- [ ] 4–7 разделов или 6–10 пунктов, каждый короткий и самостоятельный.
+- [ ] 5–9 разделов с 2–5 буллетами каждый; для длинных лекций допускается 10–15+ разделов по необходимости.
 - [ ] Крупные блоки отделены `---` при необходимости.
 - [ ] Нет вложенных списков и слишком длинных абзацев.
 - [ ] Ключевые термины выделены `**жирным**` (умеренно).
@@ -199,7 +234,7 @@ Template B — numbered steps + bullets
 ```
 
 Examples in this repo
-- Посмотрите готовые `summary` в: `public/assets/quizzes/6-make-a-memorable-speech.json`, `9-public-speaking.json`, `5-three-whales-of-public-speaking.json` — они следуют рекомендованной структуре.
+- Посмотрите готовые `summary` в: `public/assets/quizzes/01-art-of-speech/6-make-a-memorable-speech.json`, `public/assets/quizzes/01-art-of-speech/9-public-speaking.json`, `public/assets/quizzes/01-art-of-speech/5-three-whales-of-public-speaking.json` — они следуют рекомендованной структуре.
 
 Maintenance notes
 - После редактирования `summary` перегенерируйте манифест, чтобы обновления появились в Меню:
